@@ -1,5 +1,5 @@
 #!/bin/bash
-# Arreglar todo a partir da 53
+# Escribir contador na liña 54
 if [[ $EUID = 0 ]]
 then
 	if [[ -d /copiaSeg ]]
@@ -38,9 +38,9 @@ then
 			us=$(cat /etc/passwd | grep -w $2 | cut -d : -f 1)
 			if [[ $us == $2 ]]
 			then
-				if [[ -f /home/cristian/.copiaSeg.dat ]]
+				if [[ -f /home/$us/.copiaSeg.dat ]]
 				then
-					ficheiro=$(fgrep "contidoCopia=" /home/cristian/.copiaSeg.dat | cut -d = -f2 | tr ":" " " )
+					ficheiro=$(fgrep "contidoCopia=" /home/$us/.copiaSeg.dat | cut -d = -f2 | tr ":" " " )
 					if [[ -z $ficheiro ]]
 					then
 						echo -e "\e[1;31mA sintaxis é incorrecta\e[0m"
@@ -53,7 +53,7 @@ then
 						mkdir /home/cristian/copias/copia
 						for i in $ficheiro
 						do
-							chisme=$(find /home/cristian/ -name $i 2> /dev/null)
+							chisme=$(find /home/$us/ -name $i 2> /dev/null)
 							echo $chisme
 
 							cp -r $chisme /home/cristian/copias/copia/$i 2> /dev/null
@@ -62,12 +62,12 @@ then
 						tar -cf /home/cristian/copias/copia.tar *
 						cd
 						rm -r /home/cristian/copias/copia 2> /dev/null
-					
+					fi
 				else
-					echo "Non existe"
+					echo -e "\e[1;31mNon existe o ficheiro .copiaSeg.dat \e[0m"
 				fi
 			else
-				echo "Non existe ese usuairo"
+				echo -e "\e[1;31mNon existe ese usuairo \e[0m"
 			fi
 		else
 			echo -e "\e[1;31mSintaxis incorrecta \e[0m"
