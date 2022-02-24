@@ -1,5 +1,5 @@
 #!/bin/bash
-# Escribir contador na liña 54
+# Escribir ben a ruta pa facer a copia de seguridad /copiaSeg/$us/%ruta a partir da liña 40
 if [[ $EUID = 0 ]]
 then
 	if [[ -d /copiaSeg ]]
@@ -51,17 +51,46 @@ then
 						echo -e "\e[1;36mcontidoCopia=dir1:dir2:ficheiro1:ficheiro2,,.\e[0m"
 					else
 						mkdir /home/cristian/copias/copia
-						for i in $ficheiro
-						do
-							chisme=$(find /home/$us/ -name $i 2> /dev/null)
-							echo $chisme
+						ncopias=$(fgrep "Numero Copias=" /home/$us/.copiaSeg.dat | cut d- = -f 2)
+						if [[ -z $ncopias ]]
+						then
+							copiasac=$(ls -l /home/$us/copias | wc -l)
+							if [[ $copiasac -lt 2 ]]
+							then
+								for i in $ficheiro
+								do
+									chisme=$(find /home/$us/ -name $i 2> /dev/null)
+									echo $chisme
 
-							cp -r $chisme /home/cristian/copias/copia/$i 2> /dev/null
-						done
-						cd /home/cristian/copias/copia
-						tar -cf /home/cristian/copias/copia.tar *
-						cd
-						rm -r /home/cristian/copias/copia 2> /dev/null
+									cp -r $chisme /home/$us/copias/copia/$i 2> /dev/null
+								done
+								cd /home/$us/copias/copia
+								tar -cf /home/$us/copias/copia.tar *
+								cd
+								rm -r /home/$us/copias/copia 2> /dev/null
+							else
+								resu=$(expr $copiasac - $ncopias)
+								ls /home/$us/copias | sort | head -$resu | xargs rm -r
+							fi
+						else
+							if [[ $copiasac -lt $ncopias ]]
+							then
+								for i in $ficheiro
+								do
+									chisme=$(find /home/$us/ -name $i 2> /dev/null)
+									echo $chisme
+
+									cp -r $chisme /home/$us/copias/copia/$i 2> /dev/null
+								done
+								cd /home/$us/copias/copia
+								tar -cf /home/$us/copias/copia.tar *
+								cd
+								rm -r /home/$us/copias/copia 2> /dev/null
+							else
+								resu=$(expr $copiasac - $ncopias)
+								ls /home/$us/copias | sort | head -$resu | xargs rm -r
+							fi
+						fi
 					fi
 				else
 					echo -e "\e[1;31mNon existe o ficheiro .copiaSeg.dat \e[0m"
