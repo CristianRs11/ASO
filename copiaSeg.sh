@@ -50,45 +50,45 @@ then
 						echo -e "\e[1;36m#Contido da copia, único obligatorio\e[0m"
 						echo -e "\e[1;36mcontidoCopia=dir1:dir2:ficheiro1:ficheiro2,,.\e[0m"
 					else
-						mkdir /home/cristian/copias/copia
+						mkdir /copiaSeg/$us/copia
 						ncopias=$(fgrep "Numero Copias=" /home/$us/.copiaSeg.dat | cut d- = -f 2)
 						if [[ -z $ncopias ]]
 						then
-							copiasac=$(ls -l /home/$us/copias | wc -l)
+							copiasac=$(ls -l /copiaSeg/$us | wc -l)
 							if [[ $copiasac -lt 2 ]]
 							then
 								for i in $ficheiro
 								do
-									chisme=$(find /home/$us/ -name $i 2> /dev/null)
+									chisme=$(find /home/$us -name $i 2> /dev/null)
 									echo $chisme
 
-									cp -r $chisme /home/$us/copias/copia/$i 2> /dev/null
+									cp -r $chisme /copiaSeg/$us/copia/$i 2> /dev/null
 								done
-								cd /home/$us/copias/copia
-								tar -cf /home/$us/copias/copia.tar *
+								cd /copiaSeg/$us/copia
+								tar -cf /copiaSeg/$us/copiaSeg_$(date + %H_%M_%d_%m_%Y).tar *
 								cd
-								rm -r /home/$us/copias/copia 2> /dev/null
+								rm -r /copiaSeg/$us/copia 2> /dev/null
 							else
 								resu=$(expr $copiasac - $ncopias)
-								ls /home/$us/copias | sort | head -$resu | xargs rm -r
+								ls -tr /home/$us | sort | head -$resu | xargs rm -r
 							fi
 						else
 							if [[ $copiasac -lt $ncopias ]]
 							then
 								for i in $ficheiro
 								do
-									chisme=$(find /home/$us/ -name $i 2> /dev/null)
+									chisme=$(find /home/$us -name $i 2> /dev/null)
 									echo $chisme
 
-									cp -r $chisme /home/$us/copias/copia/$i 2> /dev/null
+									cp -r $chisme /copiaSeg/$us/copia/$i 2> /dev/null
 								done
-								cd /home/$us/copias/copia
-								tar -cf /home/$us/copias/copia.tar *
+								cd /copiaSeg/$us/copia
+								tar -cf /copiaSeg/$us/copiaSeg_$(date + %H_%M_%d_%m_%Y).tar *
 								cd
-								rm -r /home/$us/copias/copia 2> /dev/null
+								rm -r /copiaSeg/$us/copia 2> /dev/null
 							else
 								resu=$(expr $copiasac - $ncopias)
-								ls /home/$us/copias | sort | head -$resu | xargs rm -r
+								ls -tr /copiaSeg/$us | sort | head -$resu | xargs rm -r
 							fi
 						fi
 					fi
